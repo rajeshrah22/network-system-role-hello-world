@@ -1,0 +1,19 @@
+---
+- name: Verify nmstate Configuration
+  hosts: all
+  tasks:
+    - name: Check nmstate current state
+      shell: nmstatectl show
+      register: nmstate_output
+    - name: Display current network state
+      debug:
+        var: nmstate_output.stdout_lines
+    - name: Test connectivity to gateway
+      ping:
+        data: "Testing network connectivity"
+    - name: Check DNS resolution
+      shell: nslookup google.com
+      register: dns_test
+    - name: Display DNS test results
+      debug:
+        var: dns_test.stdout_lines

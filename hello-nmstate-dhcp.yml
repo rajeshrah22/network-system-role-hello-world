@@ -1,0 +1,27 @@
+- name: Hello World - nmstate DHCP Configuration
+  hosts: all
+  gather_facts: yes
+  vars:
+    network_state:
+      interfaces:
+        - name: enp1s0              # Replace with your interface name
+          type: ethernet
+          state: up
+          ipv4:
+            enabled: true
+            dhcp: true            # Safe DHCP configuration
+          ipv6:
+            enabled: true
+            dhcp: true
+            autoconf: true
+
+  tasks:
+    - name: Apply DHCP network configuration using nmstate
+      include_role:
+        name: linux-system-roles.network
+    - name: Show network status
+      shell: nmcli device show enp1s0
+      register: network_status
+    - name: Display network configuration
+      debug:
+        var: network_status.stdout_lines
